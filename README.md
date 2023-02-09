@@ -2,21 +2,10 @@
 
 ضمن تشکر از جناب باشسیز گرامی بابت این اسکریپت کارامد
 
-## Requirements
-You have to install following packages
-```
-git
-bc
-curl
-nmap
-parallel
-```
-
-## How to run
 1. clone
 
 ```shell
-[~]>$ git clone https://github.com/Argo160/IRC-CFScanner.git
+git clone https://github.com/Argo160/IRC-CFScanner.git
 ```
 
 2. Change direcotry and make them executable
@@ -30,15 +19,6 @@ chmod +x v2ctl v2ctl-mac v2ray v2ray-mac
 
 ```shell
 curl -s http://bot.sudoer.net/config.real -o ./config.real
-```
-
-In config file the variables are
-```shell
-id: UUID for user
-Host: Host address which ic behind Cloudflare
-Port: Port which you are using behind Cloudflare on your origin server
-path: websocket endpoint like api20
-serverName: SNI
 ```
 
 4. Execute it
