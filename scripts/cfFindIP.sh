@@ -180,14 +180,15 @@ echo "" > "$resultFile"
 for asn in "${cloudFlareASNList[@]}"
 do
 	urlResult=$(curl -I -L -s https://asnlookup.com/asn/"$asn" | grep "^HTTP" | grep 200 | awk '{ print $2 }')
-	if [[ "$urlResult" == "200" ]]
-	then
-		cloudFlareIpList=$(curl -s https://asnlookup.com/asn/"$asn"/ | grep "^<li><a href=\"/cidr/.*0/" | awk -F "cidr/" '{print $2}' | awk -F "\">" '{print $1}' | grep -E -v     "^8\.|^1\.")
-	else
-		echo "could not get url curl -s https://asnlookup.com/asn/$asn/"
-		echo "will use local file"
-		cloudFlareIpList=$(cat "$scriptDir"/cf.local.iplist)
-	fi
+	#if [[ "$urlResult" == "200" ]]
+	#then
+		#cloudFlareIpList=$(curl -s https://asnlookup.com/asn/"$asn"/ | grep "^<li><a href=\"/cidr/.*0/" | awk -F "cidr/" '{print $2}' | awk -F "\">" '{print $1}' | grep -E -v     "^8\.|^1\.")
+	#else
+		#echo "could not get url curl -s https://asnlookup.com/asn/$asn/"
+		#echo "will use local file"
+		
+	#fi
+	cloudFlareIpList=$(cat "$scriptDir"/cf.local.iplist)
 	for subNet in ${cloudFlareIpList}
 	do
 		firstOctet=$(echo "$subNet" | awk -F "." '{ print $1 }')
