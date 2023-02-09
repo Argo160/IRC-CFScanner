@@ -29,9 +29,8 @@ curl -s http://bot.sudoer.net/config.real -o ./config.real
 bash cfFindIP.sh 8 ./config.real
 ```
 
-5. نتیجه
-It will generate a file by datetime in result direcotry
-
+5. نتیجه:
+یک فایل با اسم (تاریخ+زمان) در پوشه result ساخته خواهد شد
 ```shell
 [~/IRC-CFScanner]>$ ls result/
 20230120-203358-result.cf
