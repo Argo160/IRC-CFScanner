@@ -176,10 +176,11 @@ function fncCheckSubnet {
 export -f fncCheckSubnet
 
 echo "" > "$resultFile"
-
-for asn in "${cloudFlareASNList[@]}"
-do
-	urlResult=$(curl -I -L -s https://asnlookup.com/asn/"$asn" | grep "^HTTP" | grep 200 | awk '{ print $2 }')
+echo "Enter the IP Range:"
+read IpNo
+#for asn in "${cloudFlareASNList[@]}"
+#do
+	#urlResult=$(curl -I -L -s https://asnlookup.com/asn/"$asn" | grep "^HTTP" | grep 200 | awk '{ print $2 }')
 	#if [[ "$urlResult" == "200" ]]
 	#then
 		#cloudFlareIpList=$(curl -s https://asnlookup.com/asn/"$asn"/ | grep "^<li><a href=\"/cidr/.*0/" | awk -F "cidr/" '{print $2}' | awk -F "\">" '{print $1}' | grep -E -v     "^8\.|^1\.")
@@ -188,7 +189,12 @@ do
 		#echo "will use local file"
 		
 	#fi
-	cloudFlareIpList=$(cat "$scriptDir"/cf.local.iplist)
+if [ $IpNo==45 ]
+then
+	cloudFlareIpList=$(cat "$scriptDir"/cf.45.iplist)
+else
+	cloudFlareIpList=$(cat "$scriptDir"/cf.108.iplist)
+fi
 	for subNet in ${cloudFlareIpList}
 	do
 		firstOctet=$(echo "$subNet" | awk -F "." '{ print $1 }')
@@ -200,6 +206,6 @@ do
 			killall v2ray > /dev/null 2>&1
 		fi
 	done
-done
+#done
 
 sort -n -k1 -t, "$resultFile" -o "$resultFile"
