@@ -41,7 +41,7 @@ threads="$1"
 config="$2"
 
 cloudFlareASNList=( AS209242 )
-cloudFlareOkList=(45)
+cloudFlareOkList=( 31 45 66 80 89 103 104 108 141 147 154 159 168 170 185 188 191 192 193 194 195 199 203 205 212 )
 now=$(date +"%Y%m%d-%H%M%S")
 scriptDir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 resultDir="$scriptDir/../result"
@@ -189,12 +189,58 @@ read IpNo
 		#echo "will use local file"
 		
 	#fi
-if [ $IpNo==45 ]
-then
-	cloudFlareIpList=$(cat "$scriptDir"/cf.45.iplist)
-else
-	cloudFlareIpList=$(cat "$scriptDir"/cf.108.iplist)
-fi
+case $IpNo in
+        45) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.45.iplist);;
+        103) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.103.iplist);;
+        104) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.104.iplist);;
+        108) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.108.iplist);;
+        12) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.12.iplist);;
+        123) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.123.iplist);;
+        141) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.141.iplist);;
+        146) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.146.iplist);;
+        147) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.147.iplist);;
+        154) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.154.iplist);;
+        156) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.156.iplist);;
+        159) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.159.iplist);;
+        160) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.160.iplist);;
+        162) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.162.iplist);;
+        168) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.168.iplist);;
+        170) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.170.iplist);;
+        172) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.172.iplist);;
+        174) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.174.iplist);;
+        176) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.176.iplist);;
+        185) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.185.iplist);;
+        188) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.188.iplist);;
+        191) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.191.iplist);;
+        192) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.192.iplist);;
+        193) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.193.iplist);;
+        194) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.194.iplist);;
+        195) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.195.iplist);;
+        196) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.196.iplist);;
+        199) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.199.iplist);;
+        202) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.202.iplist);;
+        203) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.203.iplist);;
+        204) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.204.iplist);;
+        205) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.205.iplist);;
+        206) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.206.iplist);;
+        207) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.207.iplist);;
+        208) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.208.iplist);;
+        212) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.212.iplist);;
+        216) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.216.iplist);;
+        23) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.23.iplist);;
+        31) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.31.iplist);;
+        38) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.38.iplist);;
+        5) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.5.iplist);;
+        64) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.64.iplist);;
+        65) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.66.iplist);;
+        72) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.72.iplist);;
+        80) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.80.iplist);;
+        89) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.89.iplist);;
+        91) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.91.iplist);;
+        93) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.93.iplist);;
+        95) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.95.iplist);;
+	*) exit;;
+esac
 	for subNet in ${cloudFlareIpList}
 	do
 		firstOctet=$(echo "$subNet" | awk -F "." '{ print $1 }')
