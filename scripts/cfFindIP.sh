@@ -41,7 +41,7 @@ threads="$1"
 config="$2"
 
 cloudFlareASNList=( AS209242 )
-cloudFlareOkList=( 31 45 66 80 89 103 104 108 141 147 154 159 168 170 185 188 191 192 193 194 195 199 203 205 212 )
+cloudFlareOkList=( 5 23 31 38 45 64 65 66 72 80 89 91 93 95 103 104 108 123 141 146 147 154 156 159 160 162 168 170 172 174 176 185 188 191 192 193 194 195 196 199 202 203 204 205 206 207 208 212 216 )
 now=$(date +"%Y%m%d-%H%M%S")
 scriptDir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 resultDir="$scriptDir/../result"
