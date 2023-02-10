@@ -39,7 +39,7 @@ bash cfFindIP.sh 8 ./config.real
 6. نتیجه:
 یک فایل با اسم (تاریخ+زمان) در پوشه result که در زیر مجموعه پوشه Solo-CFScanner واقع است، ساخته خواهد شد.
 ```shell
-cd..
+cd ..
 cd result
 ls
 ```
