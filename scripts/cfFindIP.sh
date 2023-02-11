@@ -54,6 +54,19 @@ configPort="NULL"
 configPath="NULL"
 configServerName="NULL"
 
+barCharDone="="
+barCharTodo=" "
+barSplitter='>'
+barPercentageScale=2
+progressBar=""
+
+export GREEN='\033[0;32m'
+export BLUE='\033[0;34m'
+export RED='\033[0;31m'
+export ORANGE='\033[0;33m'
+export YELLOW='\033[1;33m'
+export NC='\033[0m'
+
 # Check if config file exists
 if [[ -f "$config" ]]
 then
@@ -81,19 +94,43 @@ if [ ! -d "$configDir" ]; then
     mkdir -p "$configDir"
 fi
 
+# Function fncShowProgress
+# Progress bar maker function (based on https://www.baeldung.com/linux/command-line-progress-bar)
+function fncShowProgress {
+  current="$1"
+  total="$2"
+
+  barSize="$(($(tput cols)-70))" # 70 cols for description characters
+
+  # calculate the progress in percentage 
+  percent=$(bc <<< "scale=$barPercentageScale; 100 * $current / $total" )
+  # The number of done and todo characters
+  done=$(bc <<< "scale=0; $barSize * $percent / 100" )
+  todo=$(bc <<< "scale=0; $barSize - $done")
+  # build the done and todo sub-bars
+  doneSubBar=$(printf "%${done}s" | tr " " "${barCharDone}")
+  todoSubBar=$(printf "%${todo}s" | tr " " "${barCharTodo} - 1") # 1 for barSplitter
+  spacesSubBar=$(printf "%${todo}s" | tr " " " ")
+
+  # output the bar
+  progressBar="| Progress bar of main IPs: [${doneSubBar}${barSplitter}${todoSubBar}] ${percent}%${spacesSubBar}" # Some end space for pretty formatting
+}
+# End of Function showProgress
+
+
 # Function fncCheckSubnet
 # Check Subnet
 function fncCheckSubnet {
 	local ipList scriptDir resultFile timeoutCommand domainFronting
-	ipList="$1"
-	resultFile="$2"
-	scriptDir="$3"
-	configId="$4"
-	configHost="$5"
-	configPort="$6"
-	configPath="$7"
-	configServerName="$8"
-	osVersion="$9"
+	ipList="${1}"
+	resultFile="${3}"
+	scriptDir="${4}"
+	configId="${5}"
+	configHost="${6}"
+	configPort="${7}"
+	configPath="${8}"
+	configServerName="${9}"
+	osVersion="${10}"
 	v2rayCommand="v2ray"
 	configDir="$scriptDir/../config"
 	# set proper command for linux
@@ -159,16 +196,16 @@ function fncCheckSubnet {
 					fi
 					if [[ "$timeMil" ]] && [[ "$timeMil" != 0 ]]
 					then
-						echo "OK $ip ResponseTime $timeMil" 
+						echo -e "${GREEN}OK${NC} $ip ${BLUE}ResponseTime $timeMil${NC}" 
 						echo "$timeMil $ip" >> "$resultFile"
 					else
-						echo "FAILED $ip"
+						echo -e "${YELLOW}FAILED${NC} $ip"
 					fi
 				else
-					echo "FAILED $ip"
+					echo -e "${YELLOW}FAILED${NC} $ip"
 				fi
 			else
-				echo "FAILED $ip"
+				echo -e "${YELLOW}FAILED${NC} $ip"
 			fi
 	done
 }
