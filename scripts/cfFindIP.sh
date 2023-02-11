@@ -241,16 +241,21 @@ case $IpNo in
         95) cloudFlareIpList=$(cat "$scriptDir"/ip/cf.95.iplist);;
 	*) exit;;
 esac
+ipListLength=$(echo "$cloudFlareIpList" | wc -l)
+passedIpsCount=0
 	for subNet in ${cloudFlareIpList}
 	do
+		fncShowProgress "$passedIpsCount" "$ipListLength"
 		firstOctet=$(echo "$subNet" | awk -F "." '{ print $1 }')
 		if [[ "${cloudFlareOkList[*]}" =~ $firstOctet ]]
 		then
 			killall v2ray > /dev/null 2>&1
 			ipList=$(nmap -sL -n "$subNet" | awk '/Nmap scan report/{print $NF}')
-			parallel -j "$threads" fncCheckSubnet ::: "$ipList" ::: "$resultFile" ::: "$scriptDir" ::: "$configId" ::: "$configHost" ::: "$configPort" ::: "$configPath" ::: "$configServerName" ::: "$osVersion"
+			tput cuu1; tput ed # rewrites Parallel's bar
+			parallel --ll --bar -j "$threads" fncCheckSubnet ::: "$ipList" ::: "$progressBar" ::: "$resultFile" ::: "$scriptDir" ::: "$configId" ::: "$configHost" ::: "$configPort" ::: "$configPath" ::: "$configServerName" ::: "$osVersion"
 			killall v2ray > /dev/null 2>&1
 		fi
+		passedIpsCount=$(( passedIpsCount+1 ))
 	done
 #done
 
