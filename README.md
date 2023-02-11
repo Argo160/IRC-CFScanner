@@ -44,11 +44,6 @@ cd result
 ls
 ```
 
-7. برای سورت کردن و نمایش فایل (در صورت متوقف کردن اسکریپت در نیمه راه) از دستور زیر استفاده میکنیم:
-
-```shell
-sort -n "FileName.cf" | less
-```
 
 ## Video guide
 A video guide usage can be found in [youtube](https://youtu.be/xzuMnxEw97U "youtube").
