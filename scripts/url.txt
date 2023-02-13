@@ -1,0 +1,1 @@
+archlinux.cloudflaremirrors.com/archlinux/iso/latest/archlinux-x86_64.iso
