@@ -18,7 +18,7 @@
 #===============================================================================
 
 set -o nounset                                  # Treat unset variables as an error
-
+clear
 osVersion="Linux"
 # Check if 'parallel', 'timeout', 'nmap' and 'bc' packages are installed
 # If they are not,exit the script
