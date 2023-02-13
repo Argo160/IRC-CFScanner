@@ -338,10 +338,9 @@ function batchspeedtest(){
         clear
         for subNet2 in ${cloudFlareIpList2}
         do
-		fncShowProgress "$passedIpsCount2" "$ipListLength2"
-#                $((ii--))
+                $((ii--))
                 ipp="$subNet2"
-                echo "ip:$ipp being download speed tested!"
+                echo "ip:$ipp being download speed tested! remaining:$ii"
 		speed_download=$(curl --resolve $domain:$port:$ipp https://$domain:$port/$file -o /dev/null --connect-timeout 5 --max-time 15 -w %{speed_download} | awk -F\. '{printf ("%d\n",$1/1024)}')
 		if [ ${#speed_download} -eq 3 ]; then
                         sapce=""
@@ -357,7 +356,6 @@ function batchspeedtest(){
 resultFile2="$resultDir/$now-result2.cf"
 cloudFlareIpList2=$(awk '{print $2}' "$resultFile")
 ipListLength2=$(echo "$cloudFlareIpList" | wc -l)
-passedIpsCount2=0
 url=$(sed -n '1p' url.txt)
 domain=$(echo $url | cut -f 1 -d'/')
 file=$(echo $url | cut -f 2- -d'/')
