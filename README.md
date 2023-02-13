@@ -24,7 +24,9 @@ curl -s http://bot.sudoer.net/config.real -o ./config.real
 ```
 
 4. اجرای برنامه(تعداد عملیات همزمان و همچنین سرعت دانلود را انتخاب کنید)
+
 مقادیر قابل استفاده برای گزینه [speed] عبارتند از: (25 50 100 150 200 250 500)
+
 مقادیر قابل استفاده برای [threads] عبارتند از: 8و16و32و...
 ```shell
 bash cfFindIP.sh [threads] ./config.real [speed]
