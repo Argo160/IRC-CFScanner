@@ -338,7 +338,7 @@ function batchspeedtest(){
         clear
         for subNet2 in ${cloudFlareIpList2}
         do
-                $((ii--))
+                ((ii--))
                 ipp="$subNet2"
                 echo "ip:$ipp being download speed tested! remaining:$ii"
 		speed_download=$(curl --resolve $domain:$port:$ipp https://$domain:$port/$file -o /dev/null --connect-timeout 5 --max-time 15 -w %{speed_download} | awk -F\. '{printf ("%d\n",$1/1024)}')
