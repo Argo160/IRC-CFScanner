@@ -355,7 +355,7 @@ function batchspeedtest(){
 }
 resultFile2="$resultDir/$now-result2.cf"
 cloudFlareIpList2=$(awk '{print $2}' "$resultFile")
-ipListLength2=$(echo "$cloudFlareIpList" | wc -l)
+ipListLength2=$(echo "$cloudFlareIpList2" | wc -l)
 url=$(sed -n '1p' url.txt)
 domain=$(echo $url | cut -f 1 -d'/')
 file=$(echo $url | cut -f 2- -d'/')
