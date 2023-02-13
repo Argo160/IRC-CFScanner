@@ -23,18 +23,18 @@ osVersion="Linux"
 # Check if 'parallel', 'timeout', 'nmap' and 'bc' packages are installed
 # If they are not,exit the script
 if [[ "$(uname)" == "Linux" ]]; then
-		osVersion="Linux"
-    command -v parallel >/dev/null 2>&1 || { echo >&2 "I require 'parallel' but it's not installed. Please install it and try again."; exit 1; }
-    command -v nmap >/dev/null 2>&1 || { echo >&2 "I require 'nmap' but it's not installed. Please install it and try again."; exit 1; }
-    command -v bc >/dev/null 2>&1 || { echo >&2 "I require 'bc' but it's not installed. Please install it and try again."; exit 1; }
-		command -v timeout >/dev/null 2>&1 || { echo >&2 "I require 'timeout' but it's not installed. Please install it and try again."; exit 1; }
+	osVersion="Linux"
+    	command -v parallel >/dev/null 2>&1 || { echo >&2 "I require 'parallel' but it's not installed. Please install it and try again."; exit 1; }
+    	command -v nmap >/dev/null 2>&1 || { echo >&2 "I require 'nmap' but it's not installed. Please install it and try again."; exit 1; }
+    	command -v bc >/dev/null 2>&1 || { echo >&2 "I require 'bc' but it's not installed. Please install it and try again."; exit 1; }
+	command -v timeout >/dev/null 2>&1 || { echo >&2 "I require 'timeout' but it's not installed. Please install it and try again."; exit 1; }
 
 elif [[ "$(uname)" == "Darwin" ]];then
-		osVersion="Mac"
-    command -v parallel >/dev/null 2>&1 || { echo >&2 "I require 'parallel' but it's not installed. Please install it and try again."; exit 1; }
-    command -v nmap >/dev/null 2>&1 || { echo >&2 "I require 'nmap' but it's not installed. Please install it and try again."; exit 1; }
-    command -v bc >/dev/null 2>&1 || { echo >&2 "I require 'bc' but it's not installed. Please install it and try again."; exit 1; }
-    command -v gtimeout >/dev/null 2>&1 || { echo >&2 "I require 'gtimeout' but it's not installed. Please install it and try again."; exit 1; }
+	osVersion="Mac"
+    	command -v parallel >/dev/null 2>&1 || { echo >&2 "I require 'parallel' but it's not installed. Please install it and try again."; exit 1; }
+    	command -v nmap >/dev/null 2>&1 || { echo >&2 "I require 'nmap' but it's not installed. Please install it and try again."; exit 1; }
+    	command -v bc >/dev/null 2>&1 || { echo >&2 "I require 'bc' but it's not installed. Please install it and try again."; exit 1; }
+    	command -v gtimeout >/dev/null 2>&1 || { echo >&2 "I require 'gtimeout' but it's not installed. Please install it and try again."; exit 1; }
 fi
 
 parallelVersion=$(parallel --version | head -n1 | grep -Ewo '[0-9]{8}')
@@ -123,23 +123,23 @@ fi
 # Function fncShowProgress
 # Progress bar maker function (based on https://www.baeldung.com/linux/command-line-progress-bar)
 function fncShowProgress {
-  current="$1"
-  total="$2"
+	current="$1"
+  	total="$2"
 
-  barSize="$(($(tput cols)-70))" # 70 cols for description characters
+  	barSize="$(($(tput cols)-70))" # 70 cols for description characters
 
-  # calculate the progress in percentage 
-  percent=$(bc <<< "scale=$barPercentageScale; 100 * $current / $total" )
-  # The number of done and todo characters
-  done=$(bc <<< "scale=0; $barSize * $percent / 100" )
-  todo=$(bc <<< "scale=0; $barSize - $done")
-  # build the done and todo sub-bars
-  doneSubBar=$(printf "%${done}s" | tr " " "${barCharDone}")
-  todoSubBar=$(printf "%${todo}s" | tr " " "${barCharTodo} - 1") # 1 for barSplitter
-  spacesSubBar=$(printf "%${todo}s" | tr " " " ")
+  	# calculate the progress in percentage 
+  	percent=$(bc <<< "scale=$barPercentageScale; 100 * $current / $total" )
+  	# The number of done and todo characters
+  	done=$(bc <<< "scale=0; $barSize * $percent / 100" )
+  	todo=$(bc <<< "scale=0; $barSize - $done")
+  	# build the done and todo sub-bars
+  	doneSubBar=$(printf "%${done}s" | tr " " "${barCharDone}")
+	todoSubBar=$(printf "%${todo}s" | tr " " "${barCharTodo} - 1") # 1 for barSplitter
+  	spacesSubBar=$(printf "%${todo}s" | tr " " " ")
 
-  # output the bar
-  progressBar="| Progress bar of main IPs: [${doneSubBar}${barSplitter}${todoSubBar}] ${percent}%${spacesSubBar}" # Some end space for pretty formatting
+  	# output the bar
+  	progressBar="| Progress bar of main IPs: [${doneSubBar}${barSplitter}${todoSubBar}] ${percent}%${spacesSubBar}" # Some end space for pretty formatting
 }
 # End of Function showProgress
 
@@ -169,10 +169,10 @@ function fncCheckSubnet {
 		# set proper command for mac
 		if command -v gtimeout >/dev/null 2>&1; 
 		then
-		    timeoutCommand="gtimeout"
+			timeoutCommand="gtimeout"
 		else
-		    echo >&2 "I require 'timeout' command but it's not installed. Please install 'timeout' or an alternative command like 'gtimeout' and try again."
-		    exit 1
+			echo >&2 "I require 'timeout' command but it's not installed. Please install 'timeout' or an alternative command like 'gtimeout' and try again."
+		    	exit 1
 		fi
 	fi
 	# set proper command for v2ray
@@ -187,54 +187,54 @@ function fncCheckSubnet {
 		exit 1
 	fi
 	for ip in ${ipList}
-		do
-			if $timeoutCommand 1 bash -c "</dev/tcp/$ip/443" > /dev/null 2>&1;
+	do
+		if $timeoutCommand 1 bash -c "</dev/tcp/$ip/443" > /dev/null 2>&1;
+		then
+			domainFronting=$($timeoutCommand 2 curl -s -w "%{http_code}\n" --tlsv1.2 -servername "$frontDomain" -H "Host: $frontDomain" --resolve "$frontDomain":443:"$ip" https://"$frontDomain" -o /dev/null | grep '200')
+			if [[ "$domainFronting" == "200" ]]
 			then
-				domainFronting=$($timeoutCommand 2 curl -s -w "%{http_code}\n" --tlsv1.2 -servername "$frontDomain" -H "Host: $frontDomain" --resolve "$frontDomain":443:"$ip" https://"$frontDomain" -o /dev/null | grep '200')
-				if [[ "$domainFronting" == "200" ]]
+				ipConfigFile="$configDir/config.json.$ip"
+				cp "$scriptDir"/config.json.temp "$ipConfigFile"
+				sed -i "s/IP.IP.IP.IP/$ip/g" "$ipConfigFile"
+				ipO1=$(echo "$ip" | awk -F '.' '{print $1}')
+				ipO2=$(echo "$ip" | awk -F '.' '{print $2}')
+				ipO3=$(echo "$ip" | awk -F '.' '{print $3}')
+				ipO4=$(echo "$ip" | awk -F '.' '{print $4}')
+				port=$((ipO1 + ipO2 + ipO3 + ipO4))
+				sed -i "s/PORTPORT/3$port/g" "$ipConfigFile"
+				sed -i "s/IDID/$configId/g" "$ipConfigFile"
+				sed -i "s/HOSTHOST/$configHost/g" "$ipConfigFile"
+				sed -i "s/CFPORTCFPORT/$configPort/g" "$ipConfigFile"
+				sed -i "s/ENDPOINTENDPOINT/$configPath/g" "$ipConfigFile"
+				sed -i "s/RANDOMHOST/$configServerName/g" "$ipConfigFile"
+				# shellcheck disable=SC2009
+				pid=$(ps aux | grep config.json."$ip" | grep -v grep | awk '{ print $2 }')
+				if [[ "$pid" ]]
 				then
-					ipConfigFile="$configDir/config.json.$ip"
-					cp "$scriptDir"/config.json.temp "$ipConfigFile"
-					sed -i "s/IP.IP.IP.IP/$ip/g" "$ipConfigFile"
-					ipO1=$(echo "$ip" | awk -F '.' '{print $1}')
-					ipO2=$(echo "$ip" | awk -F '.' '{print $2}')
-					ipO3=$(echo "$ip" | awk -F '.' '{print $3}')
-					ipO4=$(echo "$ip" | awk -F '.' '{print $4}')
-					port=$((ipO1 + ipO2 + ipO3 + ipO4))
-					sed -i "s/PORTPORT/3$port/g" "$ipConfigFile"
-					sed -i "s/IDID/$configId/g" "$ipConfigFile"
-					sed -i "s/HOSTHOST/$configHost/g" "$ipConfigFile"
-					sed -i "s/CFPORTCFPORT/$configPort/g" "$ipConfigFile"
-					sed -i "s/ENDPOINTENDPOINT/$configPath/g" "$ipConfigFile"
-					sed -i "s/RANDOMHOST/$configServerName/g" "$ipConfigFile"
-					# shellcheck disable=SC2009
-					pid=$(ps aux | grep config.json."$ip" | grep -v grep | awk '{ print $2 }')
-					if [[ "$pid" ]]
-					then
-						kill -9 "$pid"
-					fi
-					nohup "$scriptDir"/"$v2rayCommand" -c "$ipConfigFile" > /dev/null &
-					sleep 2
-					timeMil=$($timeoutCommand 2 curl -x "socks5://127.0.0.1:3$port" -s -w "TIME: %{time_total}\n" https://"$scanDomain"/"$downloadFile" --output /dev/null | grep "TIME" | tail -n 1 | awk '{print $2}' | xargs -I {} echo "{} * 1000 /1" | bc )
-					# shellcheck disable=SC2009
-					pid=$(ps aux | grep config.json."$ip" | grep -v grep | awk '{ print $2 }')
-					if [[ "$pid" ]]
-					then
-						kill -9 "$pid" > /dev/null 2>&1
-					fi
-					if [[ "$timeMil" ]] && [[ "$timeMil" != 0 ]]
-					then
-						echo -e "${GREEN}OK${NC} $ip ${BLUE}ResponseTime $timeMil${NC}" 
-						echo "$timeMil $ip" >> "$resultFile"
-					else
-						echo -e "${YELLOW}FAILED${NC} $ip"
-					fi
+					kill -9 "$pid"
+				fi
+				nohup "$scriptDir"/"$v2rayCommand" -c "$ipConfigFile" > /dev/null &
+				sleep 2
+				timeMil=$($timeoutCommand 2 curl -x "socks5://127.0.0.1:3$port" -s -w "TIME: %{time_total}\n" https://"$scanDomain"/"$downloadFile" --output /dev/null | grep "TIME" | tail -n 1 | awk '{print $2}' | xargs -I {} echo "{} * 1000 /1" | bc )
+				# shellcheck disable=SC2009
+				pid=$(ps aux | grep config.json."$ip" | grep -v grep | awk '{ print $2 }')
+				if [[ "$pid" ]]
+				then
+					kill -9 "$pid" > /dev/null 2>&1
+				fi
+				if [[ "$timeMil" ]] && [[ "$timeMil" != 0 ]]
+				then
+					echo -e "${GREEN}OK${NC} $ip ${BLUE}ResponseTime $timeMil${NC}" 
+					echo "$timeMil $ip" >> "$resultFile"
 				else
 					echo -e "${YELLOW}FAILED${NC} $ip"
 				fi
 			else
 				echo -e "${YELLOW}FAILED${NC} $ip"
 			fi
+		else
+			echo -e "${YELLOW}FAILED${NC} $ip"
+		fi
 	done
 }
 # End of Function fncCheckSubnet
