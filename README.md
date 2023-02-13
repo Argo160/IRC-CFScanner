@@ -1,4 +1,4 @@
-CloudFlare IP (Ping test+ Download Speed Test)
+# CloudFlare IP Scanner (Ping test + Download Speed Test)
 
 جستجوی یک رنج آی پی خاص، جهت سهولت و تسریع عملیات.
 
@@ -23,12 +23,16 @@ chmod +x v2ctl v2ctl-mac v2ray v2ray-mac
 curl -s http://bot.sudoer.net/config.real -o ./config.real
 ```
 
-4. اجرای برنامه
-
-تعداد اجرای عملیات همزمان را مشخص کنید. بطور مثال در این کد 8 عملیات همزمان اجرا میشود
+4. اجرای برنامه(تعداد عملیات همزمان و همچنین سرعت دانلود را انتخاب کنید)
+مقادیر قابل استفاده برای گزینه [speed] عبارتند از: (25 50 100 150 200 250 500)
+مقادیر قابل استفاده برای [threads] عبارتند از: 8و16و32و...
+```shell
+bash cfFindIP.sh [threads] ./config.real [speed]
+```
+بطور مثال در این کد، 8 عملیات همزمان اجرا میشود و آی‌پی‌هایی با قابلیت سرعت 100kb سنجیده و انتخاب میشوند.
 
 ```shell
-bash cfFindIP.sh 8 ./config.real
+bash cfFindIP.sh 8 ./config.real 100
 ```
 
 5. رنج آی پی مورد نظر خود را وارد کنید
