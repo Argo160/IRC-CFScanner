@@ -52,7 +52,11 @@ cd ..
 cd result
 ls
 ```
-
+مثال از دو فایل خروجی:
+```shell
+20230213-234809-result.cf
+20230213-234809-result2.cf
+```
 
 ## Video guide
 A video guide usage can be found in [youtube](https://youtu.be/BKLRAHolhvM "youtube").
