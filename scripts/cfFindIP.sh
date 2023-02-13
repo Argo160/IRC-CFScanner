@@ -71,9 +71,10 @@ frontDomain="fronting.sudoer.net"
 scanDomain="scan.sudoer.net"
 downloadFile="data.100k"
 
-threads="$1"
-config="$2"
-speed="$3"
+read -p "Enter the parallel threads no.(8,16,32,..):" threads
+config=./config.real
+speed=100
+clear
 
 speedList=(25 50 100 150 200 250 500)
 declare -A downloadFileArr
@@ -331,3 +332,33 @@ passedIpsCount=0
 #done
 
 sort -n -k1 -t, "$resultFile" -o "$resultFile"
+function batchspeedtest(){
+        port=443
+        ii=$ipListLength
+        clear
+        for subNet2 in ${cloudFlareIpList}
+        do
+                $((ii--))
+                ipp="$subNet2"
+                echo "ip:$ipp being download speed tested. remaining:$ii"
+		speed_download=$(curl --resolve $domain:$port:$ipp https://$domain:$port/$file -o /dev/null --connect-timeout 5 --max-time 15 -w %{speed_download} | awk -F\. '{printf ("%d\n",$1/1024)}')
+		if [ ${#speed_download} -eq 3 ]; then
+                        sapce=""
+                elif [ ${#speed_download} -eq 2 ]; then
+                        space=" "
+                elif [ ${#speed_download} -eq 1 ]; then
+                        space="  "
+                fi
+                echo "$speed_download$space kb/s $ipp" >> "$resultFile2"
+                clear
+        done
+}
+resultFile2="$resultDir/$now-result2.cf"
+cloudFlareIpList=$(awk '{print $2}' "$resultFile")
+ipListLength=$(echo "$cloudFlareIpList" | wc -l)
+url=$(sed -n '1p' url.txt)
+domain=$(echo $url | cut -f 1 -d'/')
+file=$(echo $url | cut -f 2- -d'/')
+batchspeedtest
+clear
+echo "Done"
