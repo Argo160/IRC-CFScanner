@@ -249,7 +249,7 @@ echo "For testing the Download speed we need a specific amount of time to spend"
 echo "If your Internet speed is high, enter 5"
 echo "If your Internet speed is medium, enter 10"
 echo "If your Internet speed is low, enter 15"
-read -p "Enter the download time:" dTime
+read -p "Enter the download time: " dTime
 clear
 #for asn in "${cloudFlareASNList[@]}"
 #do
@@ -349,14 +349,16 @@ function batchspeedtest(){
                 ipp="$subNet2"
                 echo "ip:$ipp being download speed tested! remaining:$ii"
 		speed_download=$(curl --resolve $domain:$port:$ipp https://$domain:$port/$file -o /dev/null --connect-timeout 5 --max-time $dTime -w %{speed_download} | awk -F\. '{printf ("%d\n",$1/1024)}')
-#		if [ ${#speed_download} -eq 3 ]; then
-#                       sapce=""
-#                elif [ ${#speed_download} -eq 2 ]; then
-#                        space=" "
-#                elif [ ${#speed_download} -eq 1 ]; then
-#                        space="  "
-#                fi
-                echo "$speed_download kb/s $ipp" >> "$resultFile2"
+		if [ ${#speed_download} -eq 4 ]; then
+                       sapce=""
+                elif [ ${#speed_download} -eq 3 ]; then
+                        space=" "
+                elif [ ${#speed_download} -eq 2 ]; then
+                        space="  "
+                elif [ ${#speed_download} -eq 1 ]; then
+                        space="   "
+		fi
+                echo "$speed_download$space kb/s $ipp" >> "$resultFile2"
                 clear
         done
 }
