@@ -244,6 +244,13 @@ export -f fncCheckSubnet
 echo "" > "$resultFile"
 echo "Enter the IP Range:"
 read IpNo
+clear
+echo "For testing the Download speed we need a specific amount of time to spend"
+echo "If your Internet speed is high, enter 5"
+echo "If your Internet speed is medium, enter 10"
+echo "If your Internet speed is low, enter 15"
+read -p "Enter the download time:" dTime
+clear
 #for asn in "${cloudFlareASNList[@]}"
 #do
 	#urlResult=$(curl -I -L -s https://asnlookup.com/asn/"$asn" | grep "^HTTP" | grep 200 | awk '{ print $2 }')
@@ -341,7 +348,7 @@ function batchspeedtest(){
                 ((ii--))
                 ipp="$subNet2"
                 echo "ip:$ipp being download speed tested! remaining:$ii"
-		speed_download=$(curl --resolve $domain:$port:$ipp https://$domain:$port/$file -o /dev/null --connect-timeout 5 --max-time 15 -w %{speed_download} | awk -F\. '{printf ("%d\n",$1/1024)}')
+		speed_download=$(curl --resolve $domain:$port:$ipp https://$domain:$port/$file -o /dev/null --connect-timeout 5 --max-time $dTime -w %{speed_download} | awk -F\. '{printf ("%d\n",$1/1024)}')
 #		if [ ${#speed_download} -eq 3 ]; then
 #                       sapce=""
 #                elif [ ${#speed_download} -eq 2 ]; then
