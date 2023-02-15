@@ -22,23 +22,27 @@
 # Function fncShowProgress
 # Progress bar maker function (based on https://www.baeldung.com/linux/command-line-progress-bar)
 function fncShowProgress {
-	current="$1"
-  	total="$2"
+	barCharDone="="
+	barCharTodo=" "
+	barSplitter='>'
+	barPercentageScale=2
+  current="$1"
+  total="$2"
 
-  	barSize="$(($(tput cols)-70))" # 70 cols for description characters
+  barSize="$(($(tput cols)-70))" # 70 cols for description characters
 
-  	# calculate the progress in percentage 
-  	percent=$(bc <<< "scale=$barPercentageScale; 100 * $current / $total" )
-  	# The number of done and todo characters
-  	done=$(bc <<< "scale=0; $barSize * $percent / 100" )
-  	todo=$(bc <<< "scale=0; $barSize - $done")
-  	# build the done and todo sub-bars
-  	doneSubBar=$(printf "%${done}s" | tr " " "${barCharDone}")
-  	todoSubBar=$(printf "%${todo}s" | tr " " "${barCharTodo} - 1") # 1 for barSplitter
-  	spacesSubBar=$(printf "%${todo}s" | tr " " " ")
+  # calculate the progress in percentage 
+  percent=$(bc <<< "scale=$barPercentageScale; 100 * $current / $total" )
+  # The number of done and todo characters
+  done=$(bc <<< "scale=0; $barSize * $percent / 100" )
+  todo=$(bc <<< "scale=0; $barSize - $done")
+  # build the done and todo sub-bars
+  doneSubBar=$(printf "%${done}s" | tr " " "${barCharDone}")
+  todoSubBar=$(printf "%${todo}s" | tr " " "${barCharTodo} - 1") # 1 for barSplitter
+  spacesSubBar=$(printf "%${todo}s" | tr " " " ")
 
-  	# output the bar
-  	progressBar="| Progress bar of main IPs: [${doneSubBar}${barSplitter}${todoSubBar}] ${percent}%${spacesSubBar}" # Some end space for pretty formatting
+  # output the bar
+  progressBar="| Progress bar of main IPs: [${doneSubBar}${barSplitter}${todoSubBar}] ${percent}%${spacesSubBar}" # Some end space for pretty formatting
 }
 # End of Function showProgress
 
@@ -58,7 +62,7 @@ function fncCheckSubnet {
 	scanDomain="${11}"
 	downloadFile="${12}"
 	osVersion="${13}"
-	v2rayCommand="v2ray"
+	v2rayCommand="${14}"
 	configDir="$scriptDir/../config"
 	# set proper command for linux
 	if command -v timeout >/dev/null 2>&1; 
@@ -74,22 +78,11 @@ function fncCheckSubnet {
 		    exit 1
 		fi
 	fi
-	# set proper command for v2ray
-	if [[ "$osVersion" == "Linux" ]]
-	then
-		v2rayCommand="v2ray"
-	elif [[ "$osVersion" == "Mac"  ]]
-	then
-		v2rayCommand="v2ray-mac"
-	else
-		echo "OS not supported only Linux or Mac"
-		exit 1
-	fi
 	for ip in ${ipList}
 		do
 			if $timeoutCommand 1 bash -c "</dev/tcp/$ip/443" > /dev/null 2>&1;
 			then
-				domainFronting=$($timeoutCommand 2 curl -s -w "%{http_code}\n" --tlsv1.2 -servername "$frontDomain" -H "Host: $frontDomain" --resolve "$frontDomain":443:"$ip" https://"$frontDomain" -o /dev/null | grep '200')
+				domainFronting=$($timeoutCommand 1 curl -k -s -w "%{http_code}\n" --tlsv1.2 -H "Host: $frontDomain" --resolve "$frontDomain":443:"$ip" https://"$frontDomain" -o /dev/null | grep '200')
 				if [[ "$domainFronting" == "200" ]]
 				then
 					ipConfigFile="$configDir/config.json.$ip"
@@ -122,7 +115,7 @@ function fncCheckSubnet {
 					pid=$(ps aux | grep config.json."$ip" | grep -v grep | awk '{ print $2 }')
 					if [[ "$pid" ]]
 					then
-						kill -9 "$pid"
+						kill -9 "$pid" > /dev/null 2>&1
 					fi
 					nohup "$scriptDir"/"$v2rayCommand" -c "$ipConfigFile" > /dev/null &
 					sleep 2
@@ -233,6 +226,7 @@ function fncCheckSpeed {
 }
 # End of Function fncCheckSpeed
 
+
 # Function fncMainCFFind
 # main Function
 function fncMainCFFind {
@@ -251,6 +245,17 @@ function fncMainCFFind {
 	speed="${12}"
 	osVersion="${13}"
 	subnetsFile="${14}"
+
+	if [[ "$osVersion" == "Linux" ]]
+	then
+		v2rayCommand="v2ray"
+	elif [[ "$osVersion" == "Mac"  ]]
+	then
+		v2rayCommand="v2ray-mac"
+	else
+		echo "OS not supported only Linux or Mac"
+		exit 1
+	fi
 	
 	cloudFlareASNList=( AS209242 )
 	cloudFlareOkList=( 5 23 31 38 45 64 65 66 72 80 89 91 93 95 103 104 108 123 141 146 147 154 156 159 160 162 168 170 172 174 176 185 188 191 192 193 194 195 196 199 202 203 204 205 206 207 208 212 216 )
@@ -323,22 +328,24 @@ function fncMainCFFind {
 		do
 			fncShowProgress "$passedIpsCount" "$ipListLength"
 			firstOctet=$(echo "$subNet" | awk -F "." '{ print $1 }')
-			if [[ "${cloudFlareOkList[*]}" =~ $firstOctet ]]
+			exists=$(echo "${cloudFlareOkList[*]}" | grep " $firstOctet ")
+			if [[ "$exists" ]]
 			then
 				killall v2ray > /dev/null 2>&1
 				ipList=$(nmap -sL -n "$subNet" | awk '/Nmap scan report/{print $NF}')
 		      		tput cuu1; tput ed # rewrites Parallel's bar
 		      		if [[ $parallelVersion -gt "20220515" ]];
 		      		then
-		        		parallel --ll --bar -j "$threads" fncCheckSubnet ::: "$ipList" ::: "$progressBar" ::: "$resultFile" ::: "$scriptDir" ::: "$configId" ::: "$configHost" ::: "$configPort" ::: "$configPath" ::: "$configServerName" ::: "$frontDomain" ::: "$scanDomain" ::: "$downloadFile" ::: "$osVersion"
+		        		parallel --ll --bar -j "$threads" fncCheckSubnet ::: "$ipList" ::: "$progressBar" ::: "$resultFile" ::: "$scriptDir" ::: "$configId" ::: "$configHost" ::: "$configPort" ::: "$configPath" ::: "$configServerName" ::: "$frontDomain" ::: "$scanDomain" ::: "$downloadFile" ::: "$osVersion" ::: "$v2rayCommand"
 		      		else
 		        		echo -e "${RED}$progressBar${NC}"
-		        		parallel -j "$threads" fncCheckSubnet ::: "$ipList" ::: "$progressBar" ::: "$resultFile" ::: "$scriptDir" ::: "$configId" ::: "$configHost" ::: "$configPort" ::: "$configPath" ::: "$configServerName" ::: "$frontDomain" ::: "$scanDomain" ::: "$downloadFile" ::: "$osVersion"
+		        		parallel -j "$threads" fncCheckSubnet ::: "$ipList" ::: "$progressBar" ::: "$resultFile" ::: "$scriptDir" ::: "$configId" ::: "$configHost" ::: "$configPort" ::: "$configPath" ::: "$configServerName" ::: "$frontDomain" ::: "$scanDomain" ::: "$downloadFile" ::: "$osVersion" ::: "$v2rayCommand"
 		      		fi
 				killall v2ray > /dev/null 2>&1
 			fi
 		    	passedIpsCount=$(( passedIpsCount+1 ))
 		done
+
 #	else
 #		cfSubnetList=$(cat "$subnetsFile")
 #		ipListLength=$(echo "$cfSubnetList" | wc -l)
@@ -347,23 +354,24 @@ function fncMainCFFind {
 #		do
 #			fncShowProgress "$passedIpsCount" "$ipListLength"
 #			firstOctet=$(echo "$subNet" | awk -F "." '{ print $1 }')
-#			if [[ "${cloudFlareOkList[*]}" =~ $firstOctet ]]
+#			exists=$(echo "${cloudFlareOkList[*]}" | grep " $firstOctet ")
+#			if [[ "$exists" ]]
 #			then
 #				killall v2ray > /dev/null 2>&1
 #				ipList=$(nmap -sL -n "$subNet" | awk '/Nmap scan report/{print $NF}')
 #		    		tput cuu1; tput ed # rewrites Parallel's bar
 #		    		if [[ $parallelVersion -gt "20220515" ]];
 #		    		then
-#		      			parallel --ll --bar -j "$threads" fncCheckSubnet ::: "$ipList" ::: "$progressBar" ::: "$resultFile" ::: "$scriptDir" ::: "$configId" ::: "$configHost" ::: "$configPort" ::: "$configPath" ::: "$configServerName" ::: "$frontDomain" ::: "$scanDomain" ::: "$downloadFile" ::: "$osVersion"
+#		      			parallel --ll --bar -j "$threads" fncCheckSubnet ::: "$ipList" ::: "$progressBar" ::: "$resultFile" ::: "$scriptDir" ::: "$configId" ::: "$configHost" ::: "$configPort" ::: "$configPath" ::: "$configServerName" ::: "$frontDomain" ::: "$scanDomain" ::: "$downloadFile" ::: "$osVersion" ::: "$v2rayCommand"
 #		    		else
 #		      			echo -e "${RED}$progressBar${NC}"
-#		      			parallel -j "$threads" fncCheckSubnet ::: "$ipList" ::: "$progressBar" ::: "$resultFile" ::: "$scriptDir" ::: "$configId" ::: "$configHost" ::: "$configPort" ::: "$configPath" ::: "$configServerName" ::: "$frontDomain" ::: "$scanDomain" ::: "$downloadFile" ::: "$osVersion"
+#		      			parallel -j "$threads" fncCheckSubnet ::: "$ipList" ::: "$progressBar" ::: "$resultFile" ::: "$scriptDir" ::: "$configId" ::: "$configHost" ::: "$configPort" ::: "$configPath" ::: "$configServerName" ::: "$frontDomain" ::: "$scanDomain" ::: "$downloadFile" ::: "$osVersion" ::: "$v2rayCommand"
 #		    		fi
 #				killall v2ray > /dev/null 2>&1
 #			fi
 #		  	passedIpsCount=$(( passedIpsCount+1 ))
 #		done
-#	fi
+	fi
 	
 	sort -n -k1 -t, "$resultFile" -o "$resultFile"
 }
