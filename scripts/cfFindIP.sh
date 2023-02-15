@@ -405,7 +405,7 @@ function batchspeedtest(){
                 echo "$speed_download$space kb/s $ipp" >> "$resultFile2"
                 clear
         done
-	sort -r -k1 -t, "$resultFile2" -o "$resultFile2"
+	sort -nr -k1 -t, "$resultFile2" -o "$resultFile2"
 	clear
 	echo "Done"
 }
