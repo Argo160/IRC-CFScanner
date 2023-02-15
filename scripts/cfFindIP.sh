@@ -449,22 +449,10 @@ echo "" > "$resultFile"
 
 clear
 read -p "Enter the IP Range: " IpNo
+dTime=3
 
 osVersion="$(fncCheckDpnd)"
 fncValidateConfig "$config"
 fncMainCFFind	"$threads" "$progressBar" "$resultFile" "$scriptDir" "$configId" "$configHost" "$configPort" "$configPath" "$configServerName" "$frontDomain" "$scanDomain" "$speed" "$osVersion" "$subnetsFile"
+batchspeedtest
 
-clear
-echo "Do yoy want to have an extra speed test?"
-echo "It may cause you some significant amount of data usage"
-read -p " 					      (y/n): " stAllow
-if [ "$stAllow" == "y" ]; then
-	clear
-	echo "For testing the Download speed we need a specific amount of time to spend(Seconds)"
-	echo "If your Internet speed is high, enter 5"
-	echo "If your Internet speed is medium, enter 10"
-	echo "If your Internet speed is low, enter 15"
-	read -p "Enter the download test time (Seconds): " dTime
-	clear
-	batchspeedtest
-fi
