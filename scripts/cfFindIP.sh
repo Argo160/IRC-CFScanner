@@ -415,6 +415,7 @@ read -p "Enter the parallel threads no.(8,16,32,..):" threads
 config=./config.real
 speed=100
 clear
+subnetsFile="NULL"
 
 frontDomain="fronting.sudoer.net"
 scanDomain="scan.sudoer.net"
@@ -432,10 +433,6 @@ configPort="NULL"
 configPath="NULL"
 configServerName="NULL"
 
-barCharDone="="
-barCharTodo=" "
-barSplitter='>'
-barPercentageScale=2
 progressBar=""
 
 export GREEN='\033[0;32m'
@@ -454,7 +451,7 @@ read -p "Enter the IP Range: " IpNo
 
 osVersion="$(fncCheckDpnd)"
 fncValidateConfig "$config"
-fncMainCFFind	"$threads"	"$progressBar"	"$resultFile"	"$scriptDir"	"$configId"	"$configHost"	"$configPort"	"$configPath"	"$configServerName"	"$frontDomain"	"$scanDomain"	"$speed" "$osVersion" "$subnetsFile"
+fncMainCFFind	"$threads" "$progressBar" "$resultFile" "$scriptDir" "$configId" "$configHost" "$configPort" "$configPath" "$configServerName" "$frontDomain" "$scanDomain" "$speed" "$osVersion" "$subnetsFile"
 
 clear
 echo "Do yoy want to have an extra speed test?"
