@@ -379,6 +379,7 @@ function fncMainCFFind {
 
 function batchspeedtest(){
 	resultFile2="$resultDir/$now-result2.cf"
+	echo "" > "$resultFile2"
 	cloudFlareIpList2=$(awk '{print $2}' "$resultFile")
 	ipListLength2=$(echo "$cloudFlareIpList2" | wc -l)
 	url=$(sed -n '1p' url.txt)
