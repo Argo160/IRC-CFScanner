@@ -18,7 +18,7 @@
 #===============================================================================
 
 #set -o nounset                                  # Treat unset variables as an error
-
+clear
 # Function fncShowProgress
 # Progress bar maker function (based on https://www.baeldung.com/linux/command-line-progress-bar)
 function fncShowProgress {
@@ -459,11 +459,11 @@ echo "It may cause you some significant amount of data usage"
 read -p " 					      (y/n): " stAllow
 if [ "$stAllow" == "y" ]; then
 	clear
-	echo "For testing the Download speed we need a specific amount of time to spend"
+	echo "For testing the Download speed we need a specific amount of time to spend(Seconds)"
 	echo "If your Internet speed is high, enter 5"
 	echo "If your Internet speed is medium, enter 10"
 	echo "If your Internet speed is low, enter 15"
-	read -p "Enter the download time: " dTime
+	read -p "Enter the download test time (Seconds): " dTime
 	clear
 	batchspeedtest
 fi
